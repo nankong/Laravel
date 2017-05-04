@@ -1,0 +1,291 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>我的订单_个人中心_华为商城</title>
+
+ <style type="text/css">
+        .evalInfo{
+            font-size: 13px;
+            font-family: '宋体';
+            margin: 3 5px;
+        }
+        </style>
+
+<link href="__PUBLIC__/Css/person/ec.core.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/Css/person/main.css" rel="stylesheet" type="text/css">
+<js href="__JQUERY__"/>
+</head>
+
+
+
+<body>
+	<include file="Public/pinkheader"/>
+	<include file="Public/searchheader"/>
+	<include file="Public/naver"/>
+<div class="hr-10"></div>
+<div class="g">
+	<!--面包屑 -->
+	<div class="breadcrumb-area icon-breadcrumb fcn">您现在的位置：
+		<a href="/" title="首页">首页</a>&nbsp;&gt;&nbsp;
+		<span id="personCenter"><a href="/member/" title="个人中心">个人中心</a></span>
+		<span id="pathPoint">&nbsp;&gt;&nbsp;</span>
+		<b id="pathTitle">我的订单</b>
+	</div>
+</div>
+<div class="hr-15"></div>
+
+<div class="g">
+    <div class="fr u-4-5"><!--栏目 -->
+<div class="part-area clearfix">
+    <div class="fl">
+        <h3 class="myOrders-title"><span>评价中心</span></h3>        
+   	 </div>
+    </div>
+
+<div class="hr-3"></div>
+<!--我的订单 -->
+<div class="myOrders-area">
+	<div class="myOrders-title-area">
+        <div class="b">
+            <table border="0" cellpadding="0" cellspacing="0" id="order-list-head" style="font-size:14px;">
+                <thead>
+                    <tr>
+                        <th>商品及订单号</th>
+						 <th class="tr-span-4">评价等级</th>
+						<th class="tr-span-4">您评价的内容</em></th>
+						 <th class="tr-span-3">感谢您评价</th>                        
+                        <!-- <th class="tr-span-4 operate"></th> -->
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="hr-2"></div>
+    
+    <div id="myOrders-list-content">
+        <div class="myOrders-list">
+    	<!--我的订单-订单-套餐 -->
+		<volist name="order_info" id="vo">
+    	<div class="myOrders-pro-area">
+        	<div class="h clearfix">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td class="tal">
+                            	订单编号：{$vo.order_no}
+                            	&nbsp;&nbsp;&nbsp;&nbsp;
+                            	订单时间：{$vo.order_time|date="Y-m-d H:i:s",###}
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								
+                            </td>
+                            <td class="tr-span-4">
+								<em>
+								  进行评价
+								</em>
+							</td>
+                        </tr>
+                	</tbody>
+                </table>  
+            </div>
+            <div class="b">
+            	<table border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+
+						
+						
+                        <!-- 组合套餐列表 -->
+
+						<!-- 普通商品列表 -->
+						
+                        <tr>
+                            <td class="tal">
+                                <div class="pro-area clearfix">
+                                    <p class="p-img">
+                                    	<a title="{$vo.goods_name}" href="{:U('Product/index',array('g'=>$vo['goods_id']))}" target="_blank">
+                                    	<img alt="{$vo.goods_name}" src="__UPLOAD__{$vo.goods_tiny_pic}">
+                                        
+                                    	</a>
+                                    </p>
+                                    <p class="p-name">
+                                    	<a title="{$vo.goods_name}" target="_blank" href="{:U('Product/index',array('g'=>$vo['goods_id']))}">{$vo.goods_name}</a>
+                                    </p>
+                                    
+                                </div>
+                            </td>
+							
+							<td rowspan="1" class="tr-span-4">
+									 评价等级:<select name="comment_score"  class="comment_score">
+									     <option value="1">★</option>
+										 <option value="2">★★</option>
+										 <option value="3">★★★</option>
+										 <option value="4">★★★★</option>
+										 <option value="5" selected>★★★★★</option>
+									  </select>
+								</td>
+
+                            <td class="tr-span-3" colspan='2'>
+							   <textarea rows="4" cols="10" name="comment_content" placeholder="请输入评价内容">
+							   
+							    
+							   
+							   </textarea>
+							
+							</td>                       
+
+                        
+                            
+							
+								<td rowspan="1" class="tr-span-4 operate" >
+								        <input type="hidden" name="order_id" value="{$vo.order_id}">
+								        <input type="hidden" name="goods_id" value="{$vo.goods_id}">
+										<input type="button" value="评价" class='comment_do'>
+										
+								</td>
+							
+						
+
+                        </tr>
+                        
+                        
+					   <!-- 普通商品列表 end -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+		</volist>
+    </div>    
+</div>
+<script type="text/javascript">
+  $(function(){
+     //评价的ajax操作
+     var comment_do=$(".comment_do");
+	 comment_do.click(function(){
+	     var parent_td=$(this).parent();
+		 var table=$(this).closest('table');
+		 var comment_value=table.find('textarea').val();
+		 
+		 var comment_score=table.find(".comment_score").val();
+		 
+		 var goods_id=$(this).prev('input[name=goods_id]').val();
+		 var order_id=$(this).prev().prev('input[name=order_id]').val();
+		 
+		
+		  if(comment_value.length<=0){
+		     alert("请输入评论内容");
+			 return ;
+		  }
+		  
+		  if(comment_score<=0){
+		     alert("请选择评价等级");
+			 return;
+		  }
+		  
+		   $.ajax({
+		     'url':"{:U('OrderCenter/doComment')}",
+			 'type':'POST',
+			 data:{
+			      order_id:order_id,
+				  goods_id:goods_id,
+				  comment_value:comment_value,
+				  comment_scroe:comment_score,
+			 },
+			 success:function(responseText,status,xhr){
+			     if(status=="success"){
+				    if(responseText==1){
+					   alert("评论成功!感谢你的宝贵评论");
+					   parent_td.html("评论成功");
+					
+					}
+				 }else{
+				    alert("评论失败");
+				  
+				 }
+			 
+			 },
+			 
+			 error:function(){
+			       alert("评论失败");
+			 },
+			 timeout:60*1000,
+			 
+		 
+		 
+		 
+		 
+		 
+		 
+		 });
+	    
+	 
+	 
+	 
+	 
+	
+
+
+
+
+
+
+	});
+  
+  
+  
+  
+  
+  
+  
+  });
+
+
+
+</script>
+    <div class="hr-5"></div>
+    <!--分页 -->
+    <div class="pager" id="list-pager"></div>
+    
+</div>
+<input type="hidden" id="colid" value="0">
+<form action="#" method="get" id="gotoUrl"></form>
+<textarea id="delAlert-tpl" class="hide">
+</textarea>
+</div>
+	<div class="fl u-1-5">
+<!--左边菜单 -->
+<div class="mc-menu-area">
+	<div class="h">
+		<a href="{:U('Member/index')}" class="button-go-mc" title="个人中心"><span>个人中心</span></a>
+	</div>
+    <div class="b">
+        <ul>
+        	<li>
+        	<h3>订单中心</h3>
+            	<ol>
+                	<li id="li-order"  class='current'><a href="{:U('OrderCenter/index')}" title="我的订单"><span>我的订单</span></a></li>
+                   
+                </ol>
+            </li>
+            <li>
+            <h3>个人中心</h3>
+            	<ol>
+                	<li id="li-account"><a href="{:U('PersonCenter/index')}" title="个人信息"><span>个人信息</span></a></li>
+                    <li id="li-security"><a href="{:U('PersonCenter/pwd')}" title="密码管理"><span>密码管理</span></a></li>
+                    <li id="li-balance" ><a href="{:U('PersonCenter/account')}" title="账户余额"><span>账户余额</span></a></li>
+                    <li id="li-myAddress"><a href="{:U('PersonCenter/address')}" title="收货信息"><span>收货信息</span></a></li>
+					<li id="li-enterprise" class="hide"></li>
+                </ol>
+            </li>
+            <li>
+            <h3>社区中心</h3>
+            	<ol>
+                	<li id="li-prdRemark"><a href="{:U('Comment/index')}" title="商品评价"><span>商品评价</span></a></li>
+                </ol>
+            </li>
+        </ul>
+    </div>
+    <div class="f"></div>
+</div>
+    </div>
+</div>
+<div class="hr-60"></div>
+<include file="Public/footer"/>
+<div id="AutocompleteContainter_a76d2" style="position: absolute; z-index: 9999; top: 93px; left: 556.5px;"><div class="autocomplete-w1"><div class="autocomplete" id="Autocomplete_a76d2" style="display: none; width: 315px; max-height: 400px;"></div></div></div></body></html>
